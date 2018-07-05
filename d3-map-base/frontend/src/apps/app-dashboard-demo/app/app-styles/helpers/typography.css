@@ -1,0 +1,31 @@
+/*
+@font-face {
+	font-family: 'Gotham-bold';
+	src: url('/static/fonts/gotham-no/Gotham-Bold.eot');
+	src: url('/static/fonts/gotham-no/Gotham-Bold.eot?#iefix') format('embedded-opentype'),
+		url('/static/fonts/gotham-no/Gotham-Bold.woff') format('woff'),
+		url('/static/fonts/gotham-no/Gotham-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Gotham-medium';
+	src: url('/../fonts/gotham-no/GothamMedium.eot');
+	src: url('/../fonts/gotham-no/GothamMedium.eot?#iefix') format('embedded-opentype'),
+		url('/../fonts/gotham-no/GothamMedium.woff') format('woff'),
+		url('/../fonts/gotham-no/GothamMedium.ttf') format('truetype');
+	font-weight: 500;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Gotham-light';
+	src: url('/../fonts/gotham-no/Gotham-Light.eot');
+	src: url('/../fonts/gotham-no/Gotham-Light.eot?#iefix') format('embedded-opentype'),
+		url('/../fonts/gotham-no/Gotham-Light.woff') format('woff'),
+		url('/../fonts/gotham-no/Gotham-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-style: normal;
+}
+*/

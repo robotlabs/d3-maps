@@ -1,0 +1,11 @@
+/*
+guidelines
+import like this:
+
+@value breakpoints: "./breakpoints.css";
+@value small, medium, large , superlarge from breakpoints;
+*/
+
+@value small: (min-width: 0px) and (max-width: 599px);
+@value medium: (min-width: 600px) and (max-width: 959px);
+@value large: (min-width: 1200px);
