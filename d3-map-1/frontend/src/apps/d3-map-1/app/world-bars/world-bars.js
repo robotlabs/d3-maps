@@ -7,39 +7,33 @@ export default class Spiral extends Component {
     this.onResize = this.onResize.bind(this);
     this.onOutClick = this.onOutClick.bind(this);
     addEventListener('resize', this.onResize);
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+    this.w = window.innerWidth;
+    this.h = window.innerHeight;
 
     this.color = d3.scaleLinear()
       .domain([0, 100])
-      .range(["yellow", "black"]);
+      .range(['yellow', 'black']);
 
     //** svg container
-    let svgContainer = document.getElementById('svgContainer');
-    this.svg = d3.select(svgContainer).append('svg');
+    this.svg = d3.select(this.node).append('svg');
 
     //** svg clickable background
     this.gBack = this.svg
-      .append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", this.width)
-      .attr("height", this.height)
-      .style("fill", "steelblue");
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', this.w)
+      .attr('height', this.h)
+      .style('fill', 'steelblue');
 
     //** g for map
     this.gg = this.svg
         .append('g');
 
-    //** background click
-    this.gBack.on("click", () => {
-      this.onOutClick();
-    });
-
     //** projection
     this.projection = d3.geoMercator()
         .scale(100)
-        .translate([this.width / 2, this.height / 2 + 150]);
+        .translate([this.w / 2, this.h / 2 + 150]);
 
     //** path where to draw
     this.path = d3.geoPath()
@@ -48,8 +42,8 @@ export default class Spiral extends Component {
     this.zoom = d3.zoom()
         .duration(1500)
         .scaleExtent([1, 8])
-        .translateExtent([[0,0], [this.width, this.height]])
-        .extent([[0, 0], [this.width, this.height]])
+        .translateExtent([[0,0], [this.w, this.h]])
+        .extent([[0, 0], [this.w, this.h]])
         .on('end', () => {
           this.renderLands();
         })
@@ -63,9 +57,12 @@ export default class Spiral extends Component {
         throw error;
       }
       this.countries = topojson.feature(us, us.objects.countries).features;
-      console.log('test yes');
-      
       this.onResize();
+    });
+
+    //** background click
+    this.gBack.on('click', () => {
+      this.onOutClick();
     });
   }
 
@@ -116,21 +113,16 @@ export default class Spiral extends Component {
   }
 
   onResize() {
-    let w = window.innerWidth;
-    let h = window.innerHeight;
-
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
     this.w = window.innerWidth;
     this.h = window.innerHeight;
 
     this.gBack
-    .attr("width", this.width)
-    .attr("height", this.height);
+    .attr('width', this.w)
+    .attr('height', this.h);
 
     TweenMax.to(this.svg.node(), 1, {
-      width: w,
-      height: h,
+      width: this.w,
+      height: this.h,
       ease: window.Power4.easeOut
     });
 
@@ -142,37 +134,45 @@ export default class Spiral extends Component {
   }
 
   renderZoom() {
-    let minLeft = d3.min(this.countries.map((array) => {
-      let bounds = this.path.bounds(array);
-      return d3.min(bounds, (d) => {
-        return Number(d[0]);
-      });
-    }));
-    let maxRight = d3.max(this.countries.map((array) => {
-      let bounds = this.path.bounds(array);
-      return d3.max(bounds, (d) => {
-        return Number(d[0]);
-      });
-    }));
-    let minTop = d3.min(this.countries.map((array) => {
-      let bounds = this.path.bounds(array);
-      return d3.min(bounds, (d) => {
-        return Number(d[1]);
-      });
-    }));
-    let maxBottom = d3.max(this.countries.map((array) => {
-      let bounds = this.path.bounds(array);
-      return d3.max(bounds, (d) => {
-        return Number(d[1]);
-      });
-    }));
+    //** opt. avoid useless loop and store results */
+    if (!this.minLeft) {
+      let minLeft = d3.min(this.countries.map((array) => {
+        let bounds = this.path.bounds(array);
+        return d3.min(bounds, (d) => {
+          return Number(d[0]);
+        });
+      }));
+      let maxRight = d3.max(this.countries.map((array) => {
+        let bounds = this.path.bounds(array);
+        return d3.max(bounds, (d) => {
+          return Number(d[0]);
+        });
+      }));
+      let minTop = d3.min(this.countries.map((array) => {
+        let bounds = this.path.bounds(array);
+        return d3.min(bounds, (d) => {
+          return Number(d[1]);
+        });
+      }));
+      let maxBottom = d3.max(this.countries.map((array) => {
+        let bounds = this.path.bounds(array);
+        return d3.max(bounds, (d) => {
+          return Number(d[1]);
+        });
+      }));
 
-    let dx = maxRight - minLeft;
-    let dy = maxBottom - minTop;
-    let x = (minLeft + maxRight) / 2;
-    let y = (minTop + maxBottom) / 2;
-    let scale = Math.max(1, Math.min(3, 0.9 / Math.max(dx / this.width, dy / this.height)));
-    let translate = [this.width / 2 - scale * (x), this.height / 2 - scale * y];
+      this.minLeft = minLeft;
+      this.maxRight = maxRight;
+      this.minTop = minTop;
+      this.maxBottom = maxBottom;
+    }
+
+    let dx = this.maxRight - this.minLeft;
+    let dy = this.maxBottom - this.minTop;
+    let x = (this.minLeft + this.maxRight) / 2;
+    let y = (this.minTop + this.maxBottom) / 2;
+    let scale = Math.max(1, Math.min(3, 0.9 / Math.max(dx / this.w, dy / this.h)));
+    let translate = [this.w / 2 - scale * (x), this.h / 2 - scale * y];
     this.svg.transition()
           .duration(1200)
           .call(this.zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
@@ -191,7 +191,6 @@ export default class Spiral extends Component {
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
       scale = Math.max(1, Math.min(scaleBase, 0.5 / Math.max(dx / this.w, dy / this.h))),
-      //scale = Math.max(5, Math.min(20 / Math.max(dx / this.w, dy / this.h), 0.5 / Math.max(dx / this.w, dy / this.h))),
       translate = [this.w / 2 - scale * x, this.h / 2 - scale * y];
     this.scale = scale;
     this.svg.transition()
@@ -205,9 +204,7 @@ export default class Spiral extends Component {
       <div
         ref={(element) => {
           this.node = element;
-        }}
-        className={this.props.g1ClassName}>
-        <div className={styles.canvasDiv} ref='canvasHolder'></div>
+        }}>
       </div>
     );
   }

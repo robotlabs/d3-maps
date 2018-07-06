@@ -1,6 +1,6 @@
 var entryValues = [
   {
-    appName: 'app-react-simple',
+    appName: 'd3-map-1',
     appEntry: './src/apps/d3-map-1/'
   }
 ];
