@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="./css/app-globals.css">
+    <link rel="stylesheet" href="./css/d3-map-1.css">
+</head>
+<body>
+    <script type="text/javascript">
+        if (!DSA) var DSA = {};
+        DSA.jsScripts = [
+            "./js/vendor.js",
+            "./js/d3-map-1.js"
+        ];
+        DSA.staticBase = "{% static '' %}"
+    </script>
+    <div class="loader-page">
+        <div class="loader-page-content">
+            <img src='./imgs/loader.gif'></img>
+        </div>
+    </div>
+    <div id="svgContainer">
+    </div>
+<script type="text/javascript" src="js/script-loader.js"></script>
+</body>
+</html>
