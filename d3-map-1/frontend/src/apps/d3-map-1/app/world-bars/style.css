@@ -1,3 +1,17 @@
-canvas{
-  display:block;
+.country:hover{
+  fill: #e7c023;
+}
+.country{
+  transition: all 0.5s ease;
+  stroke: #000;
+  stroke-width: 0.5px;
+  fill: yellow;
+}
+.selectedCountry{
+  fill: #ff0099;
+  stroke-width: 0.3px;
+}
+.allCountries{
+  stroke: #000;
+  stroke-width: 0.3px;
 }

@@ -3,7 +3,13 @@ import styles from './style.css';
 
 export default class Spiral extends Component {
   componentDidMount() {
+    d3.selection.prototype.moveToFront = function() {
+      return this.each(function(){
+      this.parentNode.appendChild(this);
+      });
+    };
     //**init settings
+    this.selectedColor = '#ff0099';
     this.onResize = this.onResize.bind(this);
     this.onOutClick = this.onOutClick.bind(this);
     addEventListener('resize', this.onResize);
@@ -67,49 +73,135 @@ export default class Spiral extends Component {
   }
 
   renderLands() {
+    let strokePerc = (1 / this.scalePath);
     let rects = this.gg.selectAll('path')
-      .data(this.countries.filter((d) => {
+      .data(this.countries.filter((d, a, b) => {
+        // if (d.id === this.selectedD) {
+        //   d3.selectAll('path')
+        //   .classed(styles.selectedCountry, false)
+        // }
+        
         return d;
       }));
 
-    //** REMOVE
-    rects
-      .exit()
-      .remove();
+    let enterSel = rects
+      .enter().append('path')
+      .attr("class", styles.country)
+      .attr('d', this.path)
+      // .on('mouseover', (d, a, b) => {
+      //   if (d.id !== this.selectedD) {
+      //     // this.hoverId = d.id;
+      //     d3.select(b[a])
+      //     .style('fill', 'red');
+      //   }
+      // })
+      // .on('mouseout', (d, a, b) => {
+      //   if (d.id !== this.selectedD) {
+      //     // if (d.id === this.hoverId) {
+      //     //   this.hoverId = null;
+      //     // }
+      //     d3.select(b[a])
+      //     .style('fill', 'yellow');
+      //   }
+      // })
+      .on('click', (d, a, b) => {
+        if (this.selectedDDD) {
+          // d3.selectAll('path')
+            // .classed(styles.selectedCountry, false)
+            d3.select(this.selectedDDD.x)
+              .classed(styles.selectedCountry, false)
 
+            d3.select(this.selectedDDD.x)
+              .attr('class', styles.country);
+        }
+        this.selectedD = d.id;
+        this.selectedDDD = {
+          d: d,
+          a: a,
+          b: b,
+          x: b[a]
+        }
+
+        d3.select(b[a])
+          .attr('class', styles.selectedCountry)
+       // d3.select(b[a])
+         // .style('fill', '#ff0099');
+        this.renderZoomArea(d);
+       // d3.select(b[a]).moveToFront();
+        // d3.select(b[a].parentNode.appendChild(b[a]))//.transition().duration(300)
+        //.style({'stroke-opacity':1,'stroke':'#F00'});
+      });
     //** UPDATE
+    /*
     rects
+      .merge(enterSel)
       .transition()
       .duration(500)
       .ease(d3.easeCubic)
       .attr('d', this.path)
-      .attr('fill', (d) => {
-        return '#2b2c3d';
+      .attr("class", styles.country)
+      .style('cursor', 'pointer')
+      // .transition()
+      // .duration(1000)
+      .attr('stroke-width', (d) => {
+        if (d.id === this.selectedD) {
+          return strokePerc * 5;
+        } else {
+          return strokePerc;
+        }
+      } )
+      .attr('stroke', (d, a, b) => {
+        return 'black';
       })
-      .style('stroke-width', 1)
-			.style('stroke', 'black');
+      // .attr('fill', (d, a, b) => {
+        // if (d.id !== this.selectedD) {
+        //   d3.select(b[a])
+        //   .style('fill', 'yellow');
+        // }
+        
+        // return 'yellow'
+        // if (d.id === this.selectedD) {
+        //   // console.log('WWWWWWW');
+        // }
+        // if (d.id !== this.selectedD) {
+        //   if (this.hoverId !== d.id) {
+        //     return 'yellow';
+        //   } else {
+        //     return 'red';
+        //   }
+          
+        // } else {
+        //   // console.log('YOEOOEOEOEOEOEOEOEOE');
+        //   return '#ff0099';
+        // }
+        
+        // if (d.id !== this.selectedD && d.id !== this.hoverId) {
+        //   let el = d3.select(b[a])
+        //   el
+        //     .style('fill', 'yellow');
+        // }
+        
+        //     return;
+        // if (d.id !== this.selectedD) {
+        //   // let el = d3.select(b[a])
+        //   // el
+        //   //   .style('fill', 'yellow');
+        //   return 'yellow';
+        // } 
+        // return 'yellow';
+        // else {
+        //   return '#ff0099';
+        //   // let el = d3.select(b[a])
+        //   // el
+        //   //   .style('fill', '#ff0099');
+        // }
+      // });
+      */
 
-    //** ADD
+    //**REMOVE
     rects
-        .enter().append('path')
-        .attr('d', this.path)
-        .attr('fill', (d) => {
-          return '#726767';
-        })
-        .style('stroke-width', 1)
-        .style('stroke', 'black')
-        .style('cursor', 'pointer')
-        .on('mouseover', (d, a, b) => {
-          // let rn = Math.floor(Math.random() * 100)
-          // d3.select(b[a])
-            // .style('fill', this.color(rn));
-        })
-        .on('mouseout', (d, a, b) => {
-          // .style('fill', '#726767');
-        })
-        .on('click', (d) => {
-          this.renderZoomArea(d)
-        });
+      .exit()
+      .remove();
   }
 
   onResize() {
@@ -134,6 +226,10 @@ export default class Spiral extends Component {
   }
 
   renderZoom() {
+    d3.selectAll('path')
+      .classed(styles.allCountries, false)
+      .classed(styles.selectedCountry, false)
+      .classed(styles.country, true)
     //** opt. avoid useless loop and store results */
     if (!this.minLeft) {
       let minLeft = d3.min(this.countries.map((array) => {
@@ -172,6 +268,7 @@ export default class Spiral extends Component {
     let x = (this.minLeft + this.maxRight) / 2;
     let y = (this.minTop + this.maxBottom) / 2;
     let scale = Math.max(1, Math.min(3, 0.9 / Math.max(dx / this.w, dy / this.h)));
+    this.updateScale(scale);
     let translate = [this.w / 2 - scale * (x), this.h / 2 - scale * y];
     this.svg.transition()
           .duration(1200)
@@ -179,6 +276,9 @@ export default class Spiral extends Component {
   }
 
   renderZoomArea(d) {
+
+    d3.selectAll('path')
+      .classed(styles.allCountries, true);
     let scaleBase = 25;
     this.activeD = d;
     let test = {
@@ -192,12 +292,17 @@ export default class Spiral extends Component {
       y = (bounds[0][1] + bounds[1][1]) / 2,
       scale = Math.max(1, Math.min(scaleBase, 0.5 / Math.max(dx / this.w, dy / this.h))),
       translate = [this.w / 2 - scale * x, this.h / 2 - scale * y];
-    this.scale = scale;
+    this.updateScale(scale);
     this.svg.transition()
         .duration(1200)
         .delay(200)
         // .call(zoom.translate(translate).scale(scale).event); // not in d3 v4
         .call(this.zoom.transform, d3.zoomIdentity.translate(translate[0],translate[1]).scale(scale));
+  }
+
+  updateScale(scale) {
+    this.scalePath = scale;
+    this.renderLands();
   }
   render() {
     return (
