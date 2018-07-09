@@ -3,22 +3,12 @@ import styles from './style.css';
 
 export default class Spiral extends Component {
   componentDidMount() {
-    d3.selection.prototype.moveToFront = function() {
-      return this.each(function(){
-      this.parentNode.appendChild(this);
-      });
-    };
     //**init settings
-    this.selectedColor = '#ff0099';
     this.onResize = this.onResize.bind(this);
     this.onOutClick = this.onOutClick.bind(this);
     addEventListener('resize', this.onResize);
     this.w = window.innerWidth;
     this.h = window.innerHeight;
-
-    this.color = d3.scaleLinear()
-      .domain([0, 100])
-      .range(['yellow', 'black']);
 
     //** svg container
     this.svg = d3.select(this.node).append('svg');
@@ -30,7 +20,7 @@ export default class Spiral extends Component {
       .attr('y', 0)
       .attr('width', this.w)
       .attr('height', this.h)
-      .style('fill', 'steelblue');
+      .style('fill', '#steelblue');
 
     //** g for map
     this.gg = this.svg
@@ -73,131 +63,38 @@ export default class Spiral extends Component {
   }
 
   renderLands() {
-    let strokePerc = (1 / this.scalePath);
     let rects = this.gg.selectAll('path')
-      .data(this.countries.filter((d, a, b) => {
-        // if (d.id === this.selectedD) {
-        //   d3.selectAll('path')
-        //   .classed(styles.selectedCountry, false)
-        // }
-        
+      .data(this.countries.filter((d) => {
         return d;
       }));
 
-    let enterSel = rects
+    rects
       .enter().append('path')
       .attr("class", styles.country)
       .attr('d', this.path)
-      // .on('mouseover', (d, a, b) => {
-      //   if (d.id !== this.selectedD) {
-      //     // this.hoverId = d.id;
-      //     d3.select(b[a])
-      //     .style('fill', 'red');
-      //   }
-      // })
-      // .on('mouseout', (d, a, b) => {
-      //   if (d.id !== this.selectedD) {
-      //     // if (d.id === this.hoverId) {
-      //     //   this.hoverId = null;
-      //     // }
-      //     d3.select(b[a])
-      //     .style('fill', 'yellow');
-      //   }
-      // })
+      .on('mouseover', (d, a, b) => {
+        console.log('d ', d);
+        this.hoverCountry(d);
+      })
+      .on('mouseout', (d, a, b) => {
+      })
       .on('click', (d, a, b) => {
         if (this.selectedDDD) {
-          // d3.selectAll('path')
-            // .classed(styles.selectedCountry, false)
-            d3.select(this.selectedDDD.x)
-              .classed(styles.selectedCountry, false)
+          d3.select(this.selectedDDD.x)
+            .classed(styles.selectedCountry, false)
 
-            d3.select(this.selectedDDD.x)
-              .attr('class', styles.country);
+          d3.select(this.selectedDDD.x)
+            .attr('class', styles.country);
         }
         this.selectedD = d.id;
         this.selectedDDD = {
-          d: d,
-          a: a,
-          b: b,
           x: b[a]
-        }
+        };
 
         d3.select(b[a])
-          .attr('class', styles.selectedCountry)
-       // d3.select(b[a])
-         // .style('fill', '#ff0099');
+          .attr('class', styles.selectedCountry);
         this.renderZoomArea(d);
-       // d3.select(b[a]).moveToFront();
-        // d3.select(b[a].parentNode.appendChild(b[a]))//.transition().duration(300)
-        //.style({'stroke-opacity':1,'stroke':'#F00'});
       });
-    //** UPDATE
-    /*
-    rects
-      .merge(enterSel)
-      .transition()
-      .duration(500)
-      .ease(d3.easeCubic)
-      .attr('d', this.path)
-      .attr("class", styles.country)
-      .style('cursor', 'pointer')
-      // .transition()
-      // .duration(1000)
-      .attr('stroke-width', (d) => {
-        if (d.id === this.selectedD) {
-          return strokePerc * 5;
-        } else {
-          return strokePerc;
-        }
-      } )
-      .attr('stroke', (d, a, b) => {
-        return 'black';
-      })
-      // .attr('fill', (d, a, b) => {
-        // if (d.id !== this.selectedD) {
-        //   d3.select(b[a])
-        //   .style('fill', 'yellow');
-        // }
-        
-        // return 'yellow'
-        // if (d.id === this.selectedD) {
-        //   // console.log('WWWWWWW');
-        // }
-        // if (d.id !== this.selectedD) {
-        //   if (this.hoverId !== d.id) {
-        //     return 'yellow';
-        //   } else {
-        //     return 'red';
-        //   }
-          
-        // } else {
-        //   // console.log('YOEOOEOEOEOEOEOEOEOE');
-        //   return '#ff0099';
-        // }
-        
-        // if (d.id !== this.selectedD && d.id !== this.hoverId) {
-        //   let el = d3.select(b[a])
-        //   el
-        //     .style('fill', 'yellow');
-        // }
-        
-        //     return;
-        // if (d.id !== this.selectedD) {
-        //   // let el = d3.select(b[a])
-        //   // el
-        //   //   .style('fill', 'yellow');
-        //   return 'yellow';
-        // } 
-        // return 'yellow';
-        // else {
-        //   return '#ff0099';
-        //   // let el = d3.select(b[a])
-        //   // el
-        //   //   .style('fill', '#ff0099');
-        // }
-      // });
-      */
-
     //**REMOVE
     rects
       .exit()
@@ -304,12 +201,27 @@ export default class Spiral extends Component {
     this.scalePath = scale;
     this.renderLands();
   }
+  hoverCountry(d) {
+    let name = d.properties.name;
+    this.setState({
+      countryLabel: name
+    });
+  }
   render() {
+    let t = 'x';
+    if (this.state) {
+      t = this.state.countryLabel;
+    }
     return (
-      <div
-        ref={(element) => {
-          this.node = element;
-        }}>
+      <div>
+        <div className={styles.title}>
+          <span>{t}</span>
+        </div>
+        <div
+          ref={(element) => {
+            this.node = element;
+          }}>
+        </div>
       </div>
     );
   }

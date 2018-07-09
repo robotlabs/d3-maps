@@ -1,17 +1,28 @@
 .country:hover{
-  fill: #e7c023;
+  fill: #666520;
 }
 .country{
-  transition: all 0.5s ease;
+  cursor: pointer;
+  transition: all 0.3s ease;
   stroke: #000;
   stroke-width: 0.5px;
   fill: yellow;
 }
 .selectedCountry{
-  fill: #ff0099;
+  fill: #847a25;
   stroke-width: 0.3px;
 }
 .allCountries{
   stroke: #000;
   stroke-width: 0.3px;
+}
+.title{
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  font-size: 5em;
+}
+.title span{
+  background-color: rgba(0, 0, 0, .4);
 }
