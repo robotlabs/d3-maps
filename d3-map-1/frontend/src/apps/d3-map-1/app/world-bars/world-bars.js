@@ -73,7 +73,6 @@ export default class Spiral extends Component {
       .attr("class", styles.country)
       .attr('d', this.path)
       .on('mouseover', (d, a, b) => {
-        console.log('d ', d);
         this.hoverCountry(d);
       })
       .on('mouseout', (d, a, b) => {
