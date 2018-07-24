@@ -66,9 +66,9 @@ devhot:
 
 	# grep command is just to reduce verbosity. more details in pack/server-devhot
 	node pack/server-devhot.js $(SERVER_PROXY)| grep -v \"\\[\\d*\\]\"
-ss:
-	cd ./../output && python -m SimpleHTTPServer
+
 dev:
+	@$(MAKE) watch-pure-css &
 	$(MAKE) _prepare-build
 	$(MAKE) lint-js
 	# launch watch on pure css
@@ -120,6 +120,9 @@ build-release:
 	@$(webpack) --config pack/webpack.config.vendor.js --progress --hide-modules true
 	@$(webpack) --config pack/webpack.config.release.js --progress --hide-modules true
 
+# SERVER
+ss:
+	cd ./../output && python -m SimpleHTTPServer
 
 # UTILS
 watch-pure-css:

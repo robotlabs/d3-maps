@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
-import View from './world-bars/world-bars.js';
-
-import DataSet from './data/example.json';
-import {parser} from './services/data-parser';
-
+import View from './map/map.js';
 //** global styles, used across the app
 import styles from './style.css';
 styles;
@@ -21,31 +17,6 @@ class App extends Component {
   }
 
   initApp() {
-    parser(DataSet)
-      .then((r) => {
-        this.onDataFetched(r);
-      }, () => {
-        console.log(':: fail');
-      });
-  }
-
-  onDataFetched(results) {
-    this.results = results;
-    if (results) {
-      if (!this.firstLoad) {
-        this.onPageLoaded();
-      }
-      this.setState({
-        loaded: true
-      });
-    }
-  }
-  onDataFetchedFail(results) {
-    console.log(':: Fail data fetched :', results);
-  }
-
-  //** all data are ready for render
-  onPageLoaded() {
     var loaderPage = document.getElementsByClassName('loader-page')[0];
     var loaderPageContent = document.getElementsByClassName('loader-page-content')[0];
     TweenMax.to(loaderPageContent, .4, {autoAlpha: 0, delay: .5});

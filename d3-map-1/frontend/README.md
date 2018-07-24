@@ -16,7 +16,7 @@ then run one of the following:
 ### backend
 (make dev and make devhot open the local server, but if you need to separate, just commend ss in Makefile)
 cd root/output (!important cd in output, otherwise devhot won't work)
-python -m SimpleHTTPServer
+`python -m SimpleHTTPServer`
 
 ### PRODUCTION
 - debug production: `make prod`

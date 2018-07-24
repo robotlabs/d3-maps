@@ -1,28 +1,28 @@
-.country-Abqa5:hover{
-  fill: #666520;
+.country-1RKYI:hover{
+  fill: #ff0099;
 }
-.country-Abqa5{
+.country-1RKYI{
   cursor: pointer;
   transition: all 0.3s ease;
   stroke: #000;
   stroke-width: 0.5px;
   fill: yellow;
 }
-.selectedCountry-2nzYj{
+.selectedCountry-2LlU1{
   fill: #847a25;
   stroke-width: 0.3px;
 }
-.allCountries-1ue3s{
+.allCountries-1uM_4{
   stroke: #000;
   stroke-width: 0.3px;
 }
-.title-3kw6N{
+.title-3wbIe{
   position: absolute;
   top: 0;
   left: 0;
   color: white;
   font-size: 5em;
 }
-.title-3kw6N span{
+.title-3wbIe span{
   background-color: rgba(0, 0, 0, .4);
 }

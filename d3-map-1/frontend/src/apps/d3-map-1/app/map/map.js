@@ -35,24 +35,27 @@ export default class Spiral extends Component {
     this.path = d3.geoPath()
         .projection(this.projection);
 
+    //** define d3 zoom */
     this.zoom = d3.zoom()
         .duration(1500)
         .scaleExtent([1, 8])
         .translateExtent([[0,0], [this.w, this.h]])
         .extent([[0, 0], [this.w, this.h]])
         .on('end', () => {
+          //** call render Lands at the end of the zoom, to render properly colors of seleceted countries */
           this.renderLands();
         })
         .on('zoom', () => {
           this.gg.attr('transform', d3.event.transform);
         });
-
+    //** load topojson map of the world */
     d3.json('./countries.topo.json', (error, us) => {
       if (error) {
         console.log('error ', error);
         throw error;
       }
       this.countries = topojson.feature(us, us.objects.countries).features;
+      //** call resize that will call render Zoom, and at the end of the zoom, the render land method will be called */
       this.onResize();
     });
 
@@ -62,6 +65,7 @@ export default class Spiral extends Component {
     });
   }
 
+  //** core render of the map */
   renderLands() {
     let rects = this.gg.selectAll('path')
       .data(this.countries.filter((d) => {
@@ -70,7 +74,7 @@ export default class Spiral extends Component {
 
     rects
       .enter().append('path')
-      .attr("class", styles.country)
+      .attr('class', styles.country)
       .attr('d', this.path)
       .on('mouseover', (d, a, b) => {
         this.hoverCountry(d);
@@ -80,7 +84,7 @@ export default class Spiral extends Component {
       .on('click', (d, a, b) => {
         if (this.selectedDDD) {
           d3.select(this.selectedDDD.x)
-            .classed(styles.selectedCountry, false)
+            .classed(styles.selectedCountry, false);
 
           d3.select(this.selectedDDD.x)
             .attr('class', styles.country);
@@ -94,6 +98,7 @@ export default class Spiral extends Component {
           .attr('class', styles.selectedCountry);
         this.renderZoomArea(d);
       });
+      
     //**REMOVE
     rects
       .exit()
@@ -125,7 +130,7 @@ export default class Spiral extends Component {
     d3.selectAll('path')
       .classed(styles.allCountries, false)
       .classed(styles.selectedCountry, false)
-      .classed(styles.country, true)
+      .classed(styles.country, true);
     //** opt. avoid useless loop and store results */
     if (!this.minLeft) {
       let minLeft = d3.min(this.countries.map((array) => {
