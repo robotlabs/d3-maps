@@ -21,8 +21,6 @@ module.exports = function(env) {
       }),
       new BrowserSyncPlugin({
         host: 'localhost',
-        //port: 3011,
-        // port: 3011,
         proxy: 'http://localhost:8000/'
       },
         {

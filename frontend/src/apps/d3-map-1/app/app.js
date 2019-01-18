@@ -17,8 +17,8 @@ class App extends Component {
   }
 
   initApp() {
-    var loaderPage = document.getElementsByClassName('loader-page')[0];
-    var loaderPageContent = document.getElementsByClassName('loader-page-content')[0];
+    const loaderPage = document.getElementsByClassName('loader-page')[0];
+    const loaderPageContent = document.getElementsByClassName('loader-page-content')[0];
     TweenMax.to(loaderPageContent, .4, {autoAlpha: 0, delay: .5});
     TweenMax.to(loaderPage, 1.5, {
       autoAlpha: 0,
