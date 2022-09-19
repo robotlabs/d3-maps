@@ -1,5 +1,6 @@
 # Platform Frontend ESSENTIALS
 
+test commit 2
 ## SETUP
 if running the script for the first time
 
